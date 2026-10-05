@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Expense Tracker</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>💰 Expense Tracker</h1>
+        <button
+    id="darkModeButton"
+    onclick="toggleDarkMode()"
+    class="dark-mode-button"
+>
+    🌙 Dark Mode
+</button>
+
+        <!-- Dashboard -->
+        <div class="dashboard">
+            <div class="summary">
+    <h2>Total Income</h2>
+    <p>₹<span id="totalIncome">0</span></p>
+</div>
+
+<div class="summary">
+    <h2>Balance</h2>
+    <p>₹<span id="balanceAmount">0</span></p>
+</div>
+            <div class="summary">
+    <h2>Monthly Budget</h2>
+
+    <input
+        type="number"
+        id="budgetInput"
+        placeholder="Enter budget"
+    >
+
+    <button onclick="saveBudget()"></button>
+        Set Budget
+    </button>
+
+    <p>
+        Remaining:
+        ₹<span id="remainingBudget">0</span>
+    </p>
+</div>
+
+            <div class="summary">
+                <h2>Total Expenses</h2>
+                <p>₹<span id="totalAmount">0</span></p>
+            </div>
+
+            <div class="summary">
+                <h2>Number of Expenses</h2>
+                <p><span id="expenseCount">0</span></p>
+            </div>
+
+            <div class="summary">
+                <h2>Average Expense</h2>
+                <p>₹<span id="averageAmount">0</span></p>
+            </div>
+
+        </div>
+        <!-- Edit Expense Form -->
+<div id="expenseEditForm" class="edit-form" style="display: none;">
+
+    <h3>Edit Expense</h3>
+
+    <input
+        type="text"
+        id="editExpenseDescription"
+        placeholder="Expense description"
+    >
+
+    <input
+        type="number"
+        id="editExpenseAmount"
+        placeholder="Amount"
+    >
+
+    <select id="editExpenseCategory">
+        <option value="Food">Food</option>
+        <option value="Travel">Travel</option>
+        <option value="Shopping">Shopping</option>
+        <option value="Education">Education</option>
+        <option value="Other">Other</option>
+    </select>
+
+    <input
+        type="date"
+        id="editExpenseDate"
+    >
+
+    <button onclick="saveExpenseEdit()">
+        Save Changes
+    </button>
+    <button onclick="cancelExpenseEdit()">
+        Cancel
+    </button>
+
+</div>
+<div class="expense-form">
+
+
+    <h2>Add Income</h2>
+    <div class="expense-list">
+
+    <h2>💵 Income History</h2>
+
+    <ul id="incomeList"></ul>
+    <!-- Edit Income Form -->
+<div id="incomeEditForm" class="edit-form" style="display: none;">
+
+    <h3>Edit Income</h3>
+
+    <input
+        type="text"
+        id="editIncomeDescription"
+        placeholder="Income description"
+    >
+
+    <input
+        type="number"
+        id="editIncomeAmount"
+        placeholder="Amount"
+    >
+
+    <input
+        type="date"
+        id="editIncomeDate"
+    >
+
+    <button onclick="saveIncomeEdit()">
+        Save Changes
+    </button>
+
+    <button onclick="cancelIncomeEdit()">
+        Cancel
+    </button>
+
+</div>
+
+</div>
+
+    <input
+        type="text"
+        id="incomeDescription"
+        placeholder="Income description"
+    >
+
+    <input
+        type="number"
+        id="incomeAmount"
+        placeholder="Amount"
+    >
+
+    <input
+        type="date"
+        id="incomeDate"
+    >
+
+    <button onclick="addIncome()">
+        Add Income
+    </button>
+
+</div>
+        <!-- Add Expense -->
+        <div class="expense-form">
+
+            <h2 id="formTitle">Add Expense</h2>
+
+            <input
+                type="text"
+                id="description"
+                placeholder="Expense description"
+            >
+
+            <input
+                type="number"
+                id="amount"
+                placeholder="Amount"
+            >
+
+            <select id="category">
+                <option value="">Select Category</option>
+                <option value="Food">Food</option>
+                <option value="Travel">Travel</option>
+                <option value="Shopping">Shopping</option>
+                <option value="Education">Education</option>
+                <option value="Other">Other</option>
+            </select>
+
+            <input type="date" id="date">
+
+            <button id="submitButton" onclick="addExpense()">
+                Add Expense
+            </button>
+
+            <button
+                id="cancelButton"
+                onclick="cancelEdit()"
+                style="display: none;"
+            >
+                Cancel
+            </button>
+
+        </div>
+<!-- Category Summary -->
+<div class="category-summary">
+
+    <h2>📊 Spending by Category</h2>
+
+    <div id="categorySummary"></div>
+
+</div>
+<!-- Spending Chart -->
+<div class="chart-section">
+
+    <div class="chart-box">
+
+    <h2>📊 Expense Chart</h2>
+
+    <canvas id="expenseChart" width="800" height="400"></canvas>
+
+</div>
+<div class="monthly-box">
+
+    <h2>📅 Monthly Spending</h2>
+
+    <div id="monthlySummary"></div>
+
+
+</div>
+        <!-- Expenses -->
+<div class="expense-list">
+
+    <h2>My Expenses</h2>
+    <button onclick="exportExpenses()" class="export-button">
+    📥 Export CSV
+    <button onclick="exportPDF()">
+    📄 Export PDF
+</button>
+</button>
+
+    <!-- Search and Filter -->
+    <div class="filters">
+
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="Search expenses..."
+            oninput="displayExpenses()"
+        >
+
+        <select
+            id="filterCategory"
+            onchange="displayExpenses()"
+        >
+            <option value="">All Categories</option>
+            <option value="Food">Food</option>
+            <option value="Travel">Travel</option>
+            <option value="Shopping">Shopping</option>
+            <option value="Education">Education</option>
+            <option value="Other">Other</option>
+        </select>
+
+    </div>
+
+
+    <!-- Professional Edit Form -->
+    <div
+        id="editForm"
+        class="edit-form"
+        style="display: none;"
+    >
+
+        <h3>Edit Expense</h3>
+
+        <input
+            type="text"
+            id="editDescription"
+            placeholder="Expense description"
+        >
+
+        <input
+            type="number"
+            id="editAmount"
+            placeholder="Amount"
+        >
+
+        <select id="editCategory">
+
+            <option value="Food">Food</option>
+            <option value="Travel">Travel</option>
+            <option value="Shopping">Shopping</option>
+            <option value="Education">Education</option>
+            <option value="Other">Other</option>
+
+        </select>
+
+        <input
+            type="date"
+            id="editDate"
+        >
+
+        <button onclick="saveEdit()">
+            Save Changes
+        </button>
+
+        <button onclick="cancelEdit()">
+            Cancel
+        </button>
+
+    </div>
+
+
+    <!-- Expense Items -->
+    <ul id="expenseList"></ul>
+
+</div><script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script src="script.js"></script>
+
+
+</body>
+</html>
